@@ -48,7 +48,18 @@ app.post("/api/v1/signin", async (req, res) => {
 });
 
 
-app.post("/api/v1/content", (req, res) => {
+
+app.post("/api/v1/content", userMiddleware,(req, res) => {
+  
+const link=req.body.link;
+const type=req.body.link;
+
+
+
+
+
+});
+app.post("/api/v1/content", userMiddleware,(req, res) => {
   
 const link=req.body.link;
 const type=req.body.link;
