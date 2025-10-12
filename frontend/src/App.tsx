@@ -1,15 +1,11 @@
-import { Button } from './components/ui/Button'
-import './App.css'
-
-function App() {
-
-
-  return (
-    <>
-      <Button variant="primary" text='share'/>
-            <Button variant="primary" text='add content'/>
-    </>
-  )
+import { Dashboard } from "./pages/dashboard"
+import { Signup } from "./pages/siginup";
+function App(){
+return (<Dashboard/>);
 }
+
+
+
+
 
 export default App

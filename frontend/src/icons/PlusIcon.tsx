@@ -1,4 +1,3 @@
-import {IconProps, iconSizeVariants } from "."
 
 
 export const PlusIcon=(props:IconProps)=>{
