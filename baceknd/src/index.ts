@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 import { ContentModel, UserModel } from "./db"; // will connect automatically
@@ -13,6 +14,14 @@ import { random } from "./utils";
 import {LinkModel} from "./db";
 import  { Request, Response } from "express";
 
+
+
+
+app.use(cors({
+  origin: "http://localhost:5173", 
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  credentials: true 
+}));
 app.post("/api/v1/signup", async (req, res) => { 
   const username = req.body?.username;
   const password = req.body?.password;
