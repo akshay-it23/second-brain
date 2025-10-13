@@ -1,51 +1,64 @@
-import { Button } from '../components/Button';
-import { ShareIcon } from '../icons/share';
-import { PlusIcon } from '../icons/PlusIcon';
-import { Card } from '../components/Card';
-import '../App.css';
-import { Sidebar } from '../components/SidebarComponent';
-import { useState } from 'react';
-// import { createContext } from 'react';
-import { CreateContentModel } from '../components/CreateContentModel';
+import { Button } from "../components/Button";
+import { ShareIcon } from "../icons/share";
+import { PlusIcon } from "../icons/PlusIcon";
+import { Card } from "../components/Card";
+import "../App.css";
+import { Sidebar } from "../components/SidebarComponent";
+import { useState } from "react";
+import { CreateContentModal } from "../components/CreateContentModel";
+import { useContent } from "../hooks/useContent";
+import { BACKEND_URL } from "../config";
+import axios from "axios";
 export function Dashboard() {
-   const [modelOpen,setModelOpen]=useState(false);
-  return (   <div>
-    <Sidebar/>
+  const [modalOpen, setModalOpen] = useState(false); // ✅ consistent naming
+ const {contents,refresh}=useContent();
 
-    <div className="p-4  ml-72 h-min-screen">
+  return (
+    <div>
+      <Sidebar />
 
-      <CreateContentModel open={modelOpen}
-      onClose={()=>setModelOpen(false)}/>
-      <div className="flex gap-4 justify-end">
-        <Button
-          variant="primary"
-          text="Share Brain"
-          startIcon={<ShareIcon />}
-        />
-        <Button onClick={()=>{
-          setModelOpen(true)
-        }}
-          variant="secondary"
-          text="Add Content"
-          startIcon={<PlusIcon />}
-        />
-      </div >
-<div className='flex gap-4'>
-      <Card
-        type="twitter"
-        link="https://twitter.com/thdxr/status/1976584596314894782?ref_src=twsrc%5Etfw"
-        title="First Tweet"
-      />
+      <div className="p-4 ml-72 min-h-screen">
+ 
+        <CreateContentModal open={modalOpen} onClose={() => setModalOpen(false)} />
 
-      <Card
-        type="youtube"
-        link="https://youtu.be/NoqnQaxfhXU"
-        title="First Video"
-      /></div>
-{/*       
-    <createContext/> */}
-     
-    </div></div>
+  
+        <div className="flex gap-4 justify-end mb-6">
+          <Button  onClick={async()=>{
+          const response= await axios.post(`${BACKEND_URL}/api/v1/brain/share`,
+              {share:true},{
+                headers:{
+                  "Authorization":localStorage.getItem("token")
+                }
+              }
+            );
+          const shareUrl= `http://localhost:5173/share/${response.data.hash}`;
+          alert(shareUrl);
+          }}variant="primary" text="Share Brain" startIcon={<ShareIcon />} />
+          <Button
+            onClick={() => setModalOpen(true)}
+            variant="secondary"
+            text="Add Content"
+            startIcon={<PlusIcon />}
+          />
+        </div>
+
+   
+        <div className="flex gap-4 flex-wrap">
+      
+        {contents.map(({_id,type,link,title})=>(<Card
+              key={_id}
+              _id={_id}
+              type={type}
+              link={link}
+              title={title}
+              // onDelete={()=>handleDelete(_id)}
+              />
+            
+          ))}
+          
+        </div>
+      </div>
+    </div>
   );
 }
 

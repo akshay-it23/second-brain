@@ -1,6 +1,12 @@
 import { ShareIcon } from "../icons/share";
 
-export function Card({ title, link, type }: CardProps) {
+interface CardProps {
+  title?: string;
+  link?: string;
+  type?: string;
+}
+
+export function Card({ title, link }: CardProps) {
   const videoId = "5_RvWJXZjuI";
 
   return (

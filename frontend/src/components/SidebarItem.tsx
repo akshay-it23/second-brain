@@ -1,7 +1,7 @@
 
-import { ReactElement } from "react";
+import type { ReactElement } from "react";
 
-export function  Sidebaritem({text,icon}:{
+export function Sidebaritem({text,icon}:{
     text:string;
     icon:ReactElement;
 }){
