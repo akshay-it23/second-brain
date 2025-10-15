@@ -1,14 +1,17 @@
 import type { ReactElement } from "react";
-
+import { FC } from "react";
 interface ButtonProps {
   variant: "primary" | "secondary";
-  text: string;
+  text?: string;
+  size?: "sm" | "md" | "lg";
   startIcon?: ReactElement;
   onClick?: () => void;
-  fullWidth?: boolean;
+  // fullWidth?: boolean;
   loading?: boolean;
   className?: string;
+   icon?: FC;
   disabled?: boolean;
+  color?: "white" | "black";
 }
 
 const variantClasses = {
@@ -22,6 +25,7 @@ const baseStyles =
 export function Button({
   variant,
   text,
+
   startIcon,
   onClick,
   fullWidth = false,
