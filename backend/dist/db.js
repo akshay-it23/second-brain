@@ -36,13 +36,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ContentModel = exports.LinkModel = exports.UserModel = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
 // Connect to MongoDB
-mongoose_1.default.connect("mongodb+srv://sainiakshay2020_db_user:JLE0NfIpIdR4vZhY@brain.iqpn8s7.mongodb.net/brainApp", {
-    // optional settings
+const fallbackUri = "mongodb+srv://sainiakshay2020_db_user:JLE0NfIpIdR4vZhY@brain.iqpn8s7.mongodb.net/brainApp";
+const mongoUri = process.env.MONGODB_URI || fallbackUri;
+console.log("Using MongoDB URI:", mongoUri.startsWith("mongodb+srv") ? "<atlas_uri>" : mongoUri);
+mongoose_1.default
+    .connect(mongoUri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 })
     .then(() => console.log("✅ MongoDB connected"))
-    .catch(err => console.error("❌ MongoDB connection error:", err));
+    .catch((err) => console.error("❌ MongoDB connection error:", err));
 // User schema
 const UserSchema = new mongoose_1.Schema({
     username: { type: String, unique: true, required: true },

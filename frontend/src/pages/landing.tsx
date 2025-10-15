@@ -2,8 +2,7 @@ import logo from '../assets/Logo.png';
 import ss3 from '../assets/ss3.png';
 import { Button } from '../components/Button';
 import { useNavigate } from 'react-router-dom';
-import brain from '../assets/brain.png';
-import App from '../App';
+
 
 export function Landing() {
     const navigate = useNavigate();

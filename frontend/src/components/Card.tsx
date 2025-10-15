@@ -225,7 +225,7 @@ function InstagramEmbed({ link }: { link: string }) {
       script.async = true;
       document.body.appendChild(script);
     } else {
-      window.instgrm.Embeds.process();
+  window.instgrm?.Embeds?.process();
     }
   }, [link]);
 
@@ -272,7 +272,7 @@ export { Card };
 -------------------------------------------------- */
 declare global {
   interface Window {
-    twttr?: any;
-    instgrm?: any;
+    twttr?: { widgets?: { load: () => void } };
+    instgrm?: { Embeds?: { process: () => void } };
   }
 }

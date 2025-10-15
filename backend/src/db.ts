@@ -1,16 +1,18 @@
 import mongoose, { model, Schema } from "mongoose";
 
 // Connect to MongoDB
-mongoose.connect(
-  "mongodb+srv://sainiakshay2020_db_user:JLE0NfIpIdR4vZhY@brain.iqpn8s7.mongodb.net/brainApp",
-  {
-    // optional settings
+const fallbackUri = "mongodb+srv://sainiakshay2020_db_user:JLE0NfIpIdR4vZhY@brain.iqpn8s7.mongodb.net/brainApp";
+const mongoUri = process.env.MONGODB_URI || fallbackUri;
+
+console.log("Using MongoDB URI:", mongoUri.startsWith("mongodb+srv") ? "<atlas_uri>" : mongoUri);
+
+mongoose
+  .connect(mongoUri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-  } as mongoose.ConnectOptions
-)
+  } as mongoose.ConnectOptions)
   .then(() => console.log("✅ MongoDB connected"))
-  .catch(err => console.error("❌ MongoDB connection error:", err));
+  .catch((err) => console.error("❌ MongoDB connection error:", err));
 
 // User schema
 const UserSchema = new Schema({

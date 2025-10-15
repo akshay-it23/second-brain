@@ -1,5 +1,5 @@
 import type { ReactElement } from "react";
-import { FC } from "react";
+import type { FC } from "react";
 interface ButtonProps {
   variant: "primary" | "secondary";
   text?: string;
@@ -28,7 +28,7 @@ export function Button({
 
   startIcon,
   onClick,
-  fullWidth = false,
+  // fullWidth = false,
   loading = false,
   className = "",
   disabled = false,
@@ -39,7 +39,7 @@ export function Button({
       className={`
         ${variantClasses[variant]} 
         ${baseStyles} 
-        ${fullWidth ? "w-full" : ""} 
+    
         ${loading || disabled ? "opacity-50 cursor-not-allowed" : ""} 
         ${className}
       `}

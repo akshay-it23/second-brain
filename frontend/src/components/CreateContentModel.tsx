@@ -144,7 +144,7 @@ export function CreateContentModal({ open, onClose }: CreateContentModalProps) {
               variant="primary"
               text={loading ? "Loading..." : "Submit"}
               disabled={loading}
-              fullWidth
+       
             />
           </div>
         </div>
