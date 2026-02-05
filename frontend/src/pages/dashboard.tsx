@@ -47,7 +47,7 @@ export function Dashboard() {
         { share: true },
         { headers: { Authorization: localStorage.getItem("token") } }
       );
-      const url = `${BACKEND_URL}/share/${response.data.hash}`;
+      const url = `${BACKEND_URL}/api/v1/brain/${response.data.hash}`;
 
       const toastId = `share-${Date.now()}`;
 
@@ -155,41 +155,41 @@ export function Dashboard() {
           />
         </div>
 
-   <div className="flex gap-4 flex-wrap">
-    {contents
-  .filter((content: ContentItem) => {
-    if (!filterPlatform) return true; // No filter = show all
+        <div className="flex gap-4 flex-wrap">
+          {contents
+            .filter((content: ContentItem) => {
+              if (!filterPlatform) return true; // No filter = show all
 
-    // normalize platform string
-    const wanted = filterPlatform.trim().toLowerCase();
+              // normalize platform string
+              const wanted = filterPlatform.trim().toLowerCase();
 
-    // if content.type exists, compare
-    if (content?.type) {
-      return content.type.trim().toLowerCase() === wanted;
-    }
+              // if content.type exists, compare
+              if (content?.type) {
+                return content.type.trim().toLowerCase() === wanted;
+              }
 
-    // fallback: try to infer platform from the link
-    const link = content?.link || "";
-    if (!link) return false;
-    const l = link.toLowerCase();
-    if (wanted === "twitter" && (l.includes("twitter.com") || l.includes("x.com"))) return true;
-    if (wanted === "youtube" && (l.includes("youtube.com") || l.includes("youtu.be"))) return true;
-    if (wanted === "instagram" && l.includes("instagram.com")) return true;
-    if (wanted === "spotify" && l.includes("spotify.com")) return true;
-    if (wanted === "linkedin" && l.includes("linkedin.com")) return true;
+              // fallback: try to infer platform from the link
+              const link = content?.link || "";
+              if (!link) return false;
+              const l = link.toLowerCase();
+              if (wanted === "twitter" && (l.includes("twitter.com") || l.includes("x.com"))) return true;
+              if (wanted === "youtube" && (l.includes("youtube.com") || l.includes("youtu.be"))) return true;
+              if (wanted === "instagram" && l.includes("instagram.com")) return true;
+              if (wanted === "spotify" && l.includes("spotify.com")) return true;
+              if (wanted === "linkedin" && l.includes("linkedin.com")) return true;
 
-    return false;
-  })
-  .map(({ _id, type, link, title }: ContentItem) => (
-    <Card
-      key={_id}
-      _id={_id}
-      type={type ?? "unknown"}
-      link={link ?? ""}
-      title={title ?? "Untitled"}
-      onDelete={_id ? () => handleDelete(_id) : undefined}
-    />
-))}
+              return false;
+            })
+            .map(({ _id, type, link, title }: ContentItem) => (
+              <Card
+                key={_id}
+                _id={_id}
+                type={type ?? "unknown"}
+                link={link ?? ""}
+                title={title ?? "Untitled"}
+                onDelete={_id ? () => handleDelete(_id) : undefined}
+              />
+            ))}
 
         </div>
       </div>

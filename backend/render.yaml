@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: brainely-backend
+    env: node
+    region: oregon
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_PASSWORD
+        sync: false
+      - key: FRONTEND_URLS
+        sync: false
+      - key: PORT
+        value: 3000
+    healthCheckPath: /api/v1/health

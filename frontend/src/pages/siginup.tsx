@@ -36,9 +36,17 @@ export function Signup() {
       setTimeout(() => {
         navigate("/login");
       }, 3000);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Signup Error:", error);
-      toast.error("❌ Signup failed! Try again.", {
+      const errorMessage = error.response?.data?.message || error.response?.data?.error || "Signup failed! Try again.";
+      const errorCode = error.response?.data?.code;
+      console.error("Error details:", {
+        message: errorMessage,
+        code: errorCode,
+        status: error.response?.status,
+        data: error.response?.data
+      });
+      toast.error(`❌ ${errorMessage}`, {
         position: "top-center",
         autoClose: 3000,
       });

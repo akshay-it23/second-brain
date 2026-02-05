@@ -34,18 +34,71 @@ var __importStar = (this && this.__importStar) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ContentModel = exports.LinkModel = exports.UserModel = void 0;
+exports.connectToDatabase = connectToDatabase;
 const mongoose_1 = __importStar(require("mongoose"));
-// Connect to MongoDB
-const fallbackUri = "mongodb+srv://sainiakshay2020_db_user:JLE0NfIpIdR4vZhY@brain.iqpn8s7.mongodb.net/brainApp";
-const mongoUri = process.env.MONGODB_URI || fallbackUri;
-console.log("Using MongoDB URI:", mongoUri.startsWith("mongodb+srv") ? "<atlas_uri>" : mongoUri);
-mongoose_1.default
-    .connect(mongoUri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-})
-    .then(() => console.log("✅ MongoDB connected"))
-    .catch((err) => console.error("❌ MongoDB connection error:", err));
+// Export a function to connect to MongoDB so the server only starts after DB is ready.
+function getMongoUri() {
+    const mongoUri = process.env.MONGODB_URI;
+    if (!mongoUri) {
+        throw new Error("MONGODB_URI environment variable is required");
+    }
+    return mongoUri;
+}
+// Retry configuration
+const MAX_RETRIES = 5;
+const INITIAL_RETRY_DELAY = 1000; // 1 second
+// Sleep utility for retry delays
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+async function connectToDatabase() {
+    const mongoUri = getMongoUri();
+    console.log("Using MongoDB URI:", mongoUri.startsWith("mongodb+srv") ? "<atlas_uri>" : mongoUri);
+    let lastError;
+    for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+        try {
+            console.log(`🔄 MongoDB connection attempt ${attempt}/${MAX_RETRIES}...`);
+            // Mongoose 7.x connection options
+            await mongoose_1.default.connect(mongoUri, {
+                // Connection pool settings
+                minPoolSize: 5,
+                maxPoolSize: 10,
+                // Timeout settings
+                serverSelectionTimeoutMS: 10000, // 10 seconds to select a server
+                socketTimeoutMS: 45000, // 45 seconds socket timeout
+                connectTimeoutMS: 30000, // 30 seconds connection timeout
+                // Retry settings
+                retryWrites: true,
+                retryReads: true,
+            });
+            console.log("✅ MongoDB connected successfully");
+            // Set up connection event listeners
+            mongoose_1.default.connection.on('error', (err) => {
+                console.error('❌ MongoDB connection error:', err);
+            });
+            mongoose_1.default.connection.on('disconnected', () => {
+                console.warn('⚠️ MongoDB disconnected');
+            });
+            mongoose_1.default.connection.on('reconnected', () => {
+                console.log('🔄 MongoDB reconnected');
+            });
+            return; // Success, exit function
+        }
+        catch (err) {
+            lastError = err;
+            console.error(`❌ MongoDB connection attempt ${attempt} failed:`, err.message);
+            if (attempt < MAX_RETRIES) {
+                const delay = INITIAL_RETRY_DELAY * Math.pow(2, attempt - 1); // Exponential backoff
+                console.log(`⏳ Retrying in ${delay}ms...`);
+                await sleep(delay);
+            }
+        }
+    }
+    // All retries failed
+    console.error("❌ Failed to connect to MongoDB after", MAX_RETRIES, "attempts");
+    console.error("Last error:", lastError);
+    throw lastError;
+}
 // User schema
 const UserSchema = new mongoose_1.Schema({
     username: { type: String, unique: true, required: true },
@@ -53,12 +106,15 @@ const UserSchema = new mongoose_1.Schema({
 });
 // User model
 exports.UserModel = (0, mongoose_1.model)("User", UserSchema);
+// Content schema
 const ContentSchema = new mongoose_1.Schema({
     title: String,
     link: String,
+    type: String,
     tags: [{ type: mongoose_1.default.Types.ObjectId, ref: 'Tag' }],
     userId: { type: mongoose_1.default.Types.ObjectId, ref: 'User', required: true }
 });
+// Link schema
 const LinkSchema = new mongoose_1.Schema({
     hash: String,
     userId: { type: mongoose_1.default.Types.ObjectId, ref: 'User', required: true, unique: true },

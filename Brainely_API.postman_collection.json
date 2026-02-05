@@ -1,0 +1,313 @@
+{
+    "info": {
+        "name": "Brainely API",
+        "description": "Complete API collection for testing Brainely backend",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Health Check",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:3000/api/v1/health",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "3000",
+                    "path": [
+                        "api",
+                        "v1",
+                        "health"
+                    ]
+                },
+                "description": "Check if server and database are running"
+            }
+        },
+        {
+            "name": "Signup",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"username\": \"testuser\",\n  \"password\": \"testpass123\"\n}"
+                },
+                "url": {
+                    "raw": "http://localhost:3000/api/v1/signup",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "3000",
+                    "path": [
+                        "api",
+                        "v1",
+                        "signup"
+                    ]
+                },
+                "description": "Create a new user account"
+            }
+        },
+        {
+            "name": "Signin",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "// Save token to environment variable",
+                            "var jsonData = pm.response.json();",
+                            "if (jsonData.token) {",
+                            "    pm.environment.set(\"auth_token\", jsonData.token);",
+                            "    console.log(\"Token saved:\", jsonData.token);",
+                            "}"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"username\": \"testuser\",\n  \"password\": \"testpass123\"\n}"
+                },
+                "url": {
+                    "raw": "http://localhost:3000/api/v1/signin",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "3000",
+                    "path": [
+                        "api",
+                        "v1",
+                        "signin"
+                    ]
+                },
+                "description": "Sign in and get JWT token (automatically saved to environment)"
+            }
+        },
+        {
+            "name": "Add Content",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{auth_token}}"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"title\": \"My First Note\",\n  \"link\": \"https://www.youtube.com/watch?v=dQw4w9WgXcQ\",\n  \"type\": \"youtube\"\n}"
+                },
+                "url": {
+                    "raw": "http://localhost:3000/api/v1/content",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "3000",
+                    "path": [
+                        "api",
+                        "v1",
+                        "content"
+                    ]
+                },
+                "description": "Add new content (requires authentication)"
+            }
+        },
+        {
+            "name": "Get All Content",
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{auth_token}}"
+                    }
+                ],
+                "url": {
+                    "raw": "http://localhost:3000/api/v1/content",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "3000",
+                    "path": [
+                        "api",
+                        "v1",
+                        "content"
+                    ]
+                },
+                "description": "Get all content for authenticated user"
+            }
+        },
+        {
+            "name": "Delete Content",
+            "request": {
+                "method": "DELETE",
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{auth_token}}"
+                    }
+                ],
+                "url": {
+                    "raw": "http://localhost:3000/api/v1/content/:contentId",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "3000",
+                    "path": [
+                        "api",
+                        "v1",
+                        "content",
+                        ":contentId"
+                    ],
+                    "variable": [
+                        {
+                            "key": "contentId",
+                            "value": "PASTE_CONTENT_ID_HERE"
+                        }
+                    ]
+                },
+                "description": "Delete specific content by ID"
+            }
+        },
+        {
+            "name": "Share Brain (Enable)",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "// Save share hash",
+                            "var jsonData = pm.response.json();",
+                            "if (jsonData.hash) {",
+                            "    pm.environment.set(\"share_hash\", jsonData.hash);",
+                            "    console.log(\"Share hash saved:\", jsonData.hash);",
+                            "}"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{auth_token}}"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"share\": true\n}"
+                },
+                "url": {
+                    "raw": "http://localhost:3000/api/v1/brain/share",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "3000",
+                    "path": [
+                        "api",
+                        "v1",
+                        "brain",
+                        "share"
+                    ]
+                },
+                "description": "Enable brain sharing and get share link hash"
+            }
+        },
+        {
+            "name": "Share Brain (Disable)",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{auth_token}}"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"share\": false\n}"
+                },
+                "url": {
+                    "raw": "http://localhost:3000/api/v1/brain/share",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "3000",
+                    "path": [
+                        "api",
+                        "v1",
+                        "brain",
+                        "share"
+                    ]
+                },
+                "description": "Disable brain sharing"
+            }
+        },
+        {
+            "name": "Get Shared Brain",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:3000/api/v1/brain/:shareLink",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "3000",
+                    "path": [
+                        "api",
+                        "v1",
+                        "brain",
+                        ":shareLink"
+                    ],
+                    "variable": [
+                        {
+                            "key": "shareLink",
+                            "value": "{{share_hash}}"
+                        }
+                    ]
+                },
+                "description": "View shared brain content (no authentication required)"
+            }
+        }
+    ]
+}
